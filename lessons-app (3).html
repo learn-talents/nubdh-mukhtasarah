@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نبذ مختصرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAF6EC;
+    --paper-card: #FFFDF7;
+    --ink: #232B26;
+    --ink-soft: #5B6560;
+    --teal: #2F6F62;
+    --teal-dark: #204B42;
+    --gold: #B9924F;
+    --line: #E4DCC8;
+    --danger: #A6483A;
+    --radius: 3px;
+  }
+  body[data-theme="dark"]{
+    --paper: #1A201C;
+    --paper-card: #222A25;
+    --ink: #EAE6D6;
+    --ink-soft: #A9B8B0;
+    --teal: #4E9C89;
+    --teal-dark: #6FC2AC;
+    --gold: #D8B571;
+    --line: #38443D;
+    --danger: #D98A7B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    background-image:
+      linear-gradient(var(--paper), var(--paper)),
+      repeating-linear-gradient(0deg, rgba(185,146,79,0.035) 0px, rgba(185,146,79,0.035) 1px, transparent 1px, transparent 32px);
+    transition: background-color .2s, color .2s;
+  }
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+  /* ===== Sidebar ===== */
+  .sidebar{
+    width:240px;
+    flex-shrink:0;
+    background:var(--teal-dark);
+    color:#EDE8D8;
+    padding:24px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  body[data-theme="dark"] .sidebar{background:#141915;}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(237,232,216,0.25);padding-bottom:14px;}
+  .brand{
+    font-family:'Amiri',serif;
+    font-size:26px;
+    font-weight:700;
+    color:#F3E9CE;
+    line-height:1.3;
+  }
+  .brand small{
+    display:block;
+    font-family:'Cairo',sans-serif;
+    font-size:11.5px;
+    font-weight:400;
+    color:#B9C7C0;
+    margin-top:4px;
+  }
+  .theme-toggle{
+    background:rgba(255,255,255,0.08);border:1px solid rgba(237,232,216,0.25);color:#EDE8D8;
+    border-radius:50%;width:34px;height:34px;flex-shrink:0;cursor:pointer;font-size:15px;
+  }
+  .theme-toggle:hover{background:rgba(255,255,255,0.16);}
+  .sidebar-nav{display:flex;flex-direction:column;gap:4px;}
+  .sidebar-nav button{
+    display:flex;align-items:center;gap:8px;
+    background:none;border:none;color:#E4E9E2;text-align:right;
+    padding:8px 9px;border-radius:var(--radius);cursor:pointer;font-family:'Cairo',sans-serif;font-size:13.5px;
+  }
+  .sidebar-nav button:hover{background:rgba(237,232,216,0.08);}
+  .cat-section-title{
+    font-size:12.5px;
+    color:#9FB3AB;
+    letter-spacing:.3px;
+    margin-bottom:2px;
+  }
+  .cat-list{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    overflow-y:auto;
+  }
+  .cat-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 9px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-size:14.5px;
+    color:#E4E9E2;
+    justify-content:space-between;
+  }
+  .cat-item.child{padding-inline-start:22px;}
+  .cat-item .cat-left{display:flex;align-items:center;gap:8px;overflow:hidden;}
+  .cat-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .cat-item .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cat-item .count{font-size:12px;color:#9FB3AB;}
+  .cat-item:hover{background:rgba(237,232,216,0.08);}
+  .cat-item.active{background:rgba(237,232,216,0.16);color:#fff;}
+  .cat-item .del-cat{
+    opacity:0; border:none; background:none; color:#D9B8B0; cursor:pointer; font-size:14px; padding:0 3px;
+  }
+  .cat-item:hover .del-cat{opacity:1;}
+  .add-cat-row{
+    display:flex;
+    gap:6px;
+    margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .add-cat-row input, .add-cat-row select{
+    flex:1;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(237,232,216,0.25);
+    border-radius:var(--radius);
+    color:#EDE8D8;
+    padding:7px 9px;
+    font-size:12.5px;
+    font-family:'Cairo',sans-serif;
+    min-width:90px;
+  }
+  .add-cat-row select option{color:#232B26;}
+  .add-cat-row input::placeholder{color:#8FA39B;}
+  .add-cat-row button{
+    background:var(--gold);
+    border:none;
+    color:#2A2107;
+    border-radius:var(--radius);
+    width:32px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .sidebar-foot{margin-top:auto;font-size:11.5px;color:#7E9A90;line-height:1.6;display:flex;flex-direction:column;gap:8px;}
+  .sidebar-foot .backup-row{display:flex;gap:6px;}
+  .backup-btn{
+    flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(237,232,216,0.25);color:#EDE8D8;
+    border-radius:var(--radius);padding:7px 6px;font-size:11.5px;cursor:pointer;font-family:'Cairo',sans-serif;
+  }
+  .backup-btn:hover{background:rgba(255,255,255,0.16);}
+
+  /* ===== Main ===== */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 28px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper);
+  }
+  .topbar h1{
+    font-family:'Amiri',serif;
+    font-size:20px;
+    font-weight:700;
+    margin:0;
+    flex-shrink:0;
+  }
+  .search-box{
+    flex:1;
+    max-width:340px;
+    position:relative;
+  }
+  .search-box input{
+    width:100%;
+    padding:9px 14px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--paper-card);
+    color:var(--ink);
+    font-family:'Cairo',sans-serif;
+    font-size:14px;
+  }
+  .btn-new{
+    margin-inline-start:auto;
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:var(--radius);
+    font-family:'Cairo',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn-new:hover{background:var(--teal-dark);}
+
+  .content{flex:1;overflow-y:auto;padding:26px 28px;}
+
+  /* ===== Lesson grid ===== */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:16px;
+  }
+  .lesson-card{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 16px 14px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    transition:border-color .15s;
+  }
+  .lesson-card:hover{border-color:var(--gold);}
+  .lesson-card h3{
+    font-family:'Amiri',serif;
+    font-size:18px;
+    margin:0;
+    line-height:1.4;
+    color:var(--ink);
+  }
+  .lesson-card .excerpt{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    min-height:20px;
+  }
+  .lesson-card .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .chip{
+    font-size:11.5px;
+    padding:3px 9px;
+    border-radius:20px;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .status-chip{
+    font-size:10.5px;
+    padding:2px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+  }
+  .status-chip.new{border-color:#3C5A8C;color:#3C5A8C;}
+  .status-chip.summarized{border-color:var(--teal);color:var(--teal);}
+  .status-chip.needs_review{border-color:var(--danger);color:var(--danger);}
+  .lesson-card .meta{
+    font-size:11.5px;
+    color:#9C9484;
+    border-top:1px solid var(--line);
+    padding-top:8px;
+    margin-top:2px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+  }
+  .meta-icons{display:flex;gap:8px;}
+  .empty-state{
+    text-align:center;
+    padding:70px 20px;
+    color:var(--ink-soft);
+  }
+  .empty-state .glyph{font-size:34px;margin-bottom:10px;}
+  .empty-state h2{font-family:'Amiri',serif;font-size:20px;color:var(--ink);margin:0 0 6px;}
+  .empty-state p{margin:0;font-size:14px;}
+
+  /* ===== Editor ===== */
+  .editor-view{display:none;flex-direction:column;height:100%;}
+  .editor-view.active{display:flex;}
+  .content.editor-mode{padding:0;display:flex;flex-direction:column;flex:1;}
+  .editor-topline{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:14px 28px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper-card);
+  }
+  .back-btn{
+    background:none;border:1px solid var(--line);border-radius:var(--radius);
+    padding:7px 12px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;color:var(--ink-soft);
+  }
+  .back-btn:hover{border-color:var(--teal);color:var(--teal-dark);}
+  .save-status{font-size:12px;color:#9C9484;margin-inline-end:auto;}
+  .del-lesson-btn{
+    background:none;border:1px solid var(--line);color:var(--danger);border-radius:var(--radius);
+    padding:7px 12px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;
+  }
+  .del-lesson-btn:hover{background:#F7EAE7;}
+  body[data-theme="dark"] .del-lesson-btn:hover{background:#3A2622;}
+  .save-final-btn{
+    background:var(--teal);border:1px solid var(--teal);color:#fff;border-radius:var(--radius);
+    padding:7px 14px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;
+  }
+  .save-final-btn:hover{background:var(--teal-dark);}
+  .save-final-btn.just-saved{background:var(--teal-dark);}
+  .export-btn{
+    background:none;border:1px solid var(--line);color:var(--ink-soft);border-radius:var(--radius);
+    padding:7px 12px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;
+  }
+  .export-btn:hover{border-color:var(--gold);color:var(--ink);}
+  .status-select{
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-card);color:var(--ink);
+    font-family:'Cairo',sans-serif;font-size:12.5px;padding:6px 8px;cursor:pointer;
+  }
+
+  .title-row{padding:22px 28px 4px;}
+  .title-input{
+    width:100%;
+    border:none;
+    background:transparent;
+    font-family:'Amiri',serif;
+    font-size:30px;
+    font-weight:700;
+    color:var(--ink);
+    outline:none;
+  }
+  .title-input::placeholder{color:#C6BCA2;}
+  .metrics-badge{padding:0 28px 10px;font-size:12px;color:var(--ink-soft);}
+
+  .cat-picker{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:8px 28px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .cat-picker .label{font-size:12.5px;color:var(--ink-soft);}
+  .pick-chip{
+    font-size:12.5px;
+    padding:4px 11px;
+    border-radius:20px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--paper-card);
+    color:var(--ink-soft);
+  }
+  .pick-chip.selected{color:#fff;border-color:transparent;}
+
+  .toolbar, .toolbar2{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:4px;
+    padding:9px 24px;
+    border-bottom:1px solid var(--line);
+    background:#F3EEDF;
+    position:sticky;
+    top:0;
+    z-index:5;
+  }
+  body[data-theme="dark"] .toolbar, body[data-theme="dark"] .toolbar2{background:#1E2620;}
+  .toolbar2{top:50px;z-index:4;}
+  .toolbar button, .toolbar select, .toolbar2 button, .toolbar2 select{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-family:'Cairo',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    padding:6px 9px;
+    cursor:pointer;
+    min-height:32px;
+  }
+  .toolbar button:hover, .toolbar2 button:hover{border-color:var(--teal);}
+  .toolbar button.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .toolbar button.recording{background:var(--danger);color:#fff;border-color:var(--danger);}
+  .toolbar .sep, .toolbar2 .sep{width:1px;background:var(--line);align-self:stretch;margin:2px 4px;}
+  .toolbar input[type=color]{width:32px;height:32px;padding:2px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-card);cursor:pointer;}
+  .toolbar label.icon-color{display:flex;flex-direction:column;align-items:center;font-size:9px;color:var(--ink-soft);gap:2px;}
+  .ai-status{font-size:12px;color:var(--teal-dark);padding:0 8px;}
+
+  .editor-scroll{flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .editable{
+    width:100%;
+    max-width:780px;
+    min-height:400px;
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:38px 44px;
+    font-size:17px;
+    line-height:2;
+    outline:none;
+    color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,0.03);
+  }
+  .editable img{max-width:100%;border-radius:2px;margin:10px 0;}
+  .editable:empty:before{content:attr(data-placeholder);color:#C6BCA2;}
+  .editable h1,.editable h2,.editable h3{font-family:'Amiri',serif;}
+  .editable blockquote{
+    border-inline-start:3px solid var(--gold);
+    margin:10px 0;
+    padding:4px 16px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .editable table{border-collapse:collapse;width:100%;margin:12px 0;}
+  .editable table td, .editable table th{border:1px solid var(--line);padding:8px 10px;font-size:15px;}
+  .editable table th{background:#F3EEDF;}
+  body[data-theme="dark"] .editable table th{background:#2A342D;}
+  .editable .fn-ref{color:var(--teal-dark);cursor:default;font-size:12px;}
+  .editable .lesson-link{color:var(--teal-dark);text-decoration:underline;cursor:pointer;}
+  .editable .matn{font-weight:700;color:var(--teal-dark);}
+  .editable .sharh{color:var(--ink-soft);}
+
+  .side-panel{width:100%;max-width:780px;background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 20px;display:none;}
+  .side-panel .fn-title{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;}
+  .fn-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+  .fn-num{font-size:12px;color:var(--teal-dark);padding-top:8px;flex-shrink:0;}
+  .fn-text{flex:1;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-family:'Cairo',sans-serif;font-size:13px;padding:6px 8px;resize:vertical;min-height:34px;}
+  .fn-del{flex-shrink:0;background:none;border:1px solid var(--line);color:var(--danger);border-radius:var(--radius);cursor:pointer;padding:5px 8px;}
+  .audio-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .audio-row audio{flex:1;height:34px;}
+
+  ::-webkit-scrollbar{width:9px;height:9px;}
+  ::-webkit-scrollbar-thumb{background:#D9CFB2;border-radius:5px;}
+
+  /* ===== Modals ===== */
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,25,22,0.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  .modal-overlay.active{display:flex;}
+  .modal-box{background:var(--paper-card);border-radius:6px;max-width:640px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);}
+  .modal-head h2{margin:0;font-family:'Amiri',serif;font-size:19px;}
+  .modal-head button{background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-soft);}
+  .modal-body{padding:16px 20px;overflow-y:auto;}
+  .modal-search{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;font-family:'Cairo',sans-serif;background:var(--paper);color:var(--ink);}
+  .picker-item{padding:9px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;}
+  .picker-item:hover{background:var(--paper);}
+
+  .flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+  .flashcard{perspective:800px;height:110px;cursor:pointer;}
+  .fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .flashcard.flipped .fc-inner{transform:rotateY(180deg);}
+  .fc-front,.fc-back{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;border-radius:var(--radius);backface-visibility:hidden;font-size:13.5px;border:1px solid var(--line);}
+  .fc-front{background:var(--teal);color:#fff;font-family:'Amiri',serif;font-size:16px;}
+  .fc-back{background:var(--paper);color:var(--ink);transform:rotateY(180deg);}
+
+  .ai-summary-list{margin:0 0 14px;padding-inline-start:20px;}
+  .ai-question{border-top:1px solid var(--line);padding:8px 0;font-size:13.5px;}
+  .ai-question .q{font-weight:700;margin-bottom:4px;}
+  .ai-question .a{color:var(--ink-soft);}
+  .modal-actions{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--line);}
+  .modal-actions button{flex:1;padding:9px;border-radius:var(--radius);border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;}
+  .modal-actions button.primary{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+  @media (max-width:760px){
+    .app{flex-direction:column;}
+    .sidebar{width:100%;flex-direction:column;padding:14px 16px;}
+    .brand{font-size:20px;}
+    .cat-section-title{display:none;}
+    .cat-list{flex-direction:row;flex-wrap:wrap;}
+    .add-cat-row{width:100%;}
+    .topbar{flex-wrap:wrap;padding:14px 16px;}
+    .search-box{order:3;max-width:none;width:100%;}
+    .content{padding:16px;}
+    .title-row,.cat-picker,.editor-topline,.metrics-badge{padding-inline:16px;}
+    .toolbar,.toolbar2{padding:8px 12px;top:0;}
+    .editable{padding:24px 20px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand-row">
+      <div class="brand">نبذ مختصرة<small>منظّم الدروس والملاحظات العلمية</small></div>
+      <button class="theme-toggle" id="themeToggle" title="تبديل الوضع الليلي">🌙</button>
+    </div>
+
+    <div class="sidebar-nav">
+      <button id="openGlossaryBtn">📖 مصطلحاتي</button>
+    </div>
+
+    <div>
+      <div class="cat-section-title">التصنيفات</div>
+      <div class="cat-list" id="catList"></div>
+      <div class="add-cat-row">
+        <input type="text" id="newCatInput" placeholder="تصنيف جديد…" maxlength="30">
+        <select id="newCatParent"><option value="">تصنيف رئيسي</option></select>
+        <button id="addCatBtn" title="إضافة">+</button>
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <span>تُحفظ دروسك تلقائيًا داخل متصفح هذا الجهاز (لا تُحذف عند التحديث). استخدم النسخ الاحتياطي لنقلها إلى جهاز آخر.</span>
+      <div class="backup-row">
+        <button class="backup-btn" id="backupBtn">⤓ نسخ احتياطي</button>
+        <button class="backup-btn" id="restoreBtn">⤒ استرجاع</button>
+      </div>
+      <div class="backup-row">
+        <button class="backup-btn" id="aiSettingsBtn" style="flex:1;">⚙️ مفاتيح الذكاء الاصطناعي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LIST VIEW -->
+    <div id="listView">
+      <div class="topbar">
+        <h1 id="viewTitle">كل الدروس</h1>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="ابحث في الدروس، الوسوم، الحواشي…">
+        </div>
+        <button class="btn-new" id="newLessonBtn">+ درس جديد</button>
+      </div>
+      <div class="content">
+        <div class="grid" id="lessonGrid"></div>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div class="glyph">📜</div>
+          <h2>لا توجد دروس بعد</h2>
+          <p>ابدأ بإضافة أول درس لك من الزر أعلاه.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITOR VIEW -->
+    <div class="editor-view" id="editorView">
+      <div class="editor-topline">
+        <button class="back-btn" id="backBtn">→ رجوع للقائمة</button>
+        <span class="save-status" id="saveStatus"></span>
+        <select class="status-select" id="statusSelect">
+          <option value="new">جديد</option>
+          <option value="summarized">تم تلخيصه</option>
+          <option value="needs_review">بحاجة لمراجعة</option>
+        </select>
+        <button class="save-final-btn" id="saveFinalBtn" title="حفظ فوري نهائي">💾 حفظ نهائي</button>
+        <button class="export-btn" id="exportWordBtn" title="تصدير إلى Word">تصدير Word</button>
+        <button class="export-btn" id="exportPdfBtn" title="تصدير إلى PDF">تصدير PDF</button>
+        <button class="del-lesson-btn" id="delLessonBtn">حذف الدرس</button>
+      </div>
+
+      <div class="title-row">
+        <input type="text" class="title-input" id="titleInput" placeholder="عنوان الدرس">
+      </div>
+      <div class="metrics-badge" id="metricsBadge"></div>
+
+      <div class="cat-picker" id="catPicker">
+        <span class="label">التصنيفات:</span>
+      </div>
+
+      <div class="toolbar" id="toolbar">
+        <select id="blockSelect" title="نوع الفقرة">
+          <option value="P">نص عادي</option>
+          <option value="H1">عنوان كبير</option>
+          <option value="H2">عنوان متوسط</option>
+          <option value="H3">عنوان صغير</option>
+          <option value="BLOCKQUOTE">اقتباس</option>
+        </select>
+        <select id="fontSelect" title="نوع الخط">
+          <option value="'Amiri', serif">أميري</option>
+          <option value="'Cairo', sans-serif" selected>القاهرة</option>
+          <option value="Tahoma, sans-serif">تاهوما</option>
+          <option value="'Traditional Arabic', serif">Traditional Arabic</option>
+          <option value="'Simplified Arabic', serif">Simplified Arabic</option>
+          <option value="'Sakkal Majalla', serif">Sakkal Majalla</option>
+          <option value="'Arabic Typesetting', serif">Arabic Typesetting</option>
+          <option value="'Microsoft Uighur', serif">Microsoft Uighur</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+          <option value="Calibri, sans-serif">Calibri</option>
+          <option value="'Segoe UI', sans-serif">Segoe UI</option>
+        </select>
+        <button id="localFontsBtn" title="استكشاف الخطوط المثبّتة على جهازك">🖥️ خطوط الجهاز</button>
+        <select id="sizeSelect" title="حجم الخط">
+          <option value="1">صغير جدًا</option>
+          <option value="2">صغير</option>
+          <option value="3" selected>عادي</option>
+          <option value="4">متوسط</option>
+          <option value="5">كبير</option>
+          <option value="6">أكبر</option>
+          <option value="7">ضخم</option>
+        </select>
+        <div class="sep"></div>
+        <button data-cmd="bold" title="غامق"><b>غ</b></button>
+        <button data-cmd="italic" title="مائل"><i>م</i></button>
+        <button data-cmd="underline" title="تسطير"><u>س</u></button>
+        <button data-cmd="strikeThrough" title="يتوسطه خط"><s>ش</s></button>
+        <div class="sep"></div>
+        <label class="icon-color">لون<input type="color" id="foreColor" value="#232B26"></label>
+        <label class="icon-color">تظليل<input type="color" id="hiliteColor" value="#FCEFC2"></label>
+        <div class="sep"></div>
+        <button data-cmd="justifyRight" title="محاذاة يمين">⟵≡</button>
+        <button data-cmd="justifyCenter" title="توسيط">≡</button>
+        <button data-cmd="justifyLeft" title="محاذاة يسار">≡⟶</button>
+        <div class="sep"></div>
+        <button data-cmd="insertUnorderedList" title="قائمة نقطية">•—</button>
+        <button data-cmd="insertOrderedList" title="قائمة مرقمة">1—</button>
+        <div class="sep"></div>
+        <button id="insertImgBtn" title="إدراج صورة">🖼️ صورة</button>
+        <button id="insertLinkBtn" title="إدراج رابط">🔗 رابط</button>
+        <button id="insertTableBtn" title="إدراج جدول">📊 جدول</button>
+        <div class="sep"></div>
+        <button data-cmd="undo" title="تراجع">↶</button>
+        <button data-cmd="redo" title="إعادة">↷</button>
+        <button data-cmd="removeFormat" title="مسح التنسيق">✕</button>
+      </div>
+
+      <div class="toolbar2" id="toolbar2">
+        <button id="symPbuh" title="صلى الله عليه وسلم">ﷺ</button>
+        <button id="symAzza" title="عز وجل">ﷻ</button>
+        <button id="symMosque" title="رمز">🕌</button>
+        <button id="symBook" title="رمز">📚</button>
+        <button id="symAyah" title="أحط النص بأقواس آية ﴿ ﴾">﴿ آية ﴾</button>
+        <button id="symQuote" title="أحط النص بعلامتي تنصيص « »">« نص »</button>
+        <div class="sep"></div>
+        <button id="addFootnoteBtn" title="إدراج حاشية مرجعية">📝 حاشية</button>
+        <button id="addGlossaryBtn" title="أضف التحديد إلى مصطلحاتي">📌 مصطلح</button>
+        <button id="linkLessonBtn" title="اربط بدرس آخر">🔗 ربط بدرس</button>
+        <button id="recordBtn" title="تسجيل صوتي">🎙️ تسجيل صوتي</button>
+        <button id="uploadAudioBtn" title="رفع ملف صوتي من الجهاز">⬆️ رفع تسجيل</button>
+        <div class="sep"></div>
+        <button id="aiFormatBtn" title="تنسيق هيكلي ذكي + أقواس الآيات والأحاديث">✨ تنسيق ذكي</button>
+        <button id="aiSummaryBtn" title="تلخيص وأسئلة مراجعة">🧠 تلخيص + أسئلة</button>
+        <button id="aiMatnBtn" title="تمييز المتن عن الشرح">🖊️ متن/شرح</button>
+        <span class="ai-status" id="aiStatus"></span>
+      </div>
+
+      <div class="editor-scroll">
+        <div class="editable" id="editable" contenteditable="true" data-placeholder="اكتب محتوى الدرس هنا…"></div>
+        <div class="side-panel" id="footnotesPanel"></div>
+        <div class="side-panel" id="audioPanel"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<input type="file" id="imgFileInput" accept="image/*" style="display:none;">
+<input type="file" id="restoreFileInput" accept="application/json" style="display:none;">
+<input type="file" id="audioFileInput" accept="audio/*" style="display:none;">
+
+<!-- Glossary Modal -->
+<div class="modal-overlay" id="glossaryModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>مصطلحاتي</h2><button id="closeGlossary">✕</button></div>
+    <div class="modal-body"><div class="flash-grid" id="glossaryList"></div></div>
+  </div>
+</div>
+
+<!-- Lesson Link Picker Modal -->
+<div class="modal-overlay" id="lessonPickerModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>اربط بدرس</h2><button id="closeLessonPicker">✕</button></div>
+    <div class="modal-body">
+      <input type="text" class="modal-search" id="lessonPickerSearch" placeholder="ابحث عن درس…">
+      <div id="lessonPickerList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Settings Modal -->
+<div class="modal-overlay" id="aiSettingsModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>مفاتيح الذكاء الاصطناعي</h2><button id="closeAiSettings">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.8;margin-top:0;">
+        أدخل مفتاح API واحدًا على الأقل لتفعيل أدوات الذكاء الاصطناعي (التنسيق، التلخيص، متن/شرح، وتحليل التسجيلات الصوتية).
+        تُحفظ المفاتيح على جهازك فقط ولا تُرسَل لأي جهة عدا مزوّد الخدمة الذي تختاره مباشرةً من متصفحك.
+        عند تفعيل أكثر من مزوّد، يحاول التطبيق كلود أولًا، فإن لم يتوفر مفتاحه أو تعذّر الاتصال به ينتقل تلقائيًا إلى ChatGPT ثم Gemini
+        (وللتسجيلات الصوتية يبدأ بـ Gemini ثم ChatGPT لأن كلود لا يدعم تحليل الصوت مباشرة حاليًا).
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <label style="font-size:13px;font-weight:600;">مفتاح Claude (Anthropic)
+          <input type="password" id="keyAnthropic" placeholder="sk-ant-…" style="width:100%;margin-top:5px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-family:'Cairo',sans-serif;">
+        </label>
+        <label style="font-size:13px;font-weight:600;">مفتاح ChatGPT (OpenAI)
+          <input type="password" id="keyOpenai" placeholder="sk-…" style="width:100%;margin-top:5px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-family:'Cairo',sans-serif;">
+        </label>
+        <label style="font-size:13px;font-weight:600;">مفتاح Gemini (Google)
+          <input type="password" id="keyGoogle" placeholder="AIza…" style="width:100%;margin-top:5px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-family:'Cairo',sans-serif;">
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button id="saveAiSettingsBtn" class="primary">حفظ المفاتيح</button>
+    </div>
+  </div>
+</div>
+
+<!-- Audio Analysis Result Modal -->
+<div class="modal-overlay" id="audioAnalysisModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>تحليل التسجيل الصوتي</h2><button id="closeAudioAnalysis">✕</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--ink-soft);margin-bottom:8px;" id="audioAnalysisProvider"></div>
+      <div class="fn-title">النص المفرَّغ (Transcript)</div>
+      <div id="audioTranscriptText" style="white-space:pre-wrap;font-size:14px;line-height:1.9;border:1px solid var(--line);border-radius:var(--radius);padding:10px;max-height:220px;overflow-y:auto;background:var(--paper);"></div>
+      <div class="fn-title" style="margin-top:14px;">أهم النقاط</div>
+      <ul class="ai-summary-list" id="audioAnalysisPoints"></ul>
+    </div>
+    <div class="modal-actions">
+      <button id="insertAudioAnalysisBtn" class="primary">إدراج النص والنقاط في الدرس</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Summary Modal -->
+<div class="modal-overlay" id="aiSummaryModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>الخلاصة وأسئلة المراجعة</h2><button id="closeAiSummary">✕</button></div>
+    <div class="modal-body">
+      <ul class="ai-summary-list" id="aiSummaryList"></ul>
+      <div id="aiQuestionsList"></div>
+    </div>
+    <div class="modal-actions">
+      <button id="insertSummaryBtn" class="primary">إدراج الخلاصة في أعلى الدرس</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PALETTE = ['#2F6F62','#B9924F','#A6483A','#3C5A8C','#7D5A9E','#4E8B6F','#B15C34','#5B6E3C'];
+const STATUS_LABELS = {new:'جديد', summarized:'تم تلخيصه', needs_review:'بحاجة لمراجعة'};
+
+let state = { categories: [], lessons: [], glossary: [], settings: { theme: 'light', apiKeys: { anthropic:'', openai:'', google:'' } } };
+let currentCategoryFilter = 'all';
+let currentLessonId = null;
+let saveTimer = null;
+let mediaRecorder = null;
+let audioChunks = [];
+
+/* =====================================================================
+   تخزين محلي حقيقي على الجهاز (IndexedDB مع نسخة احتياطية عبر localStorage)
+   يوفّر نفس واجهة window.storage المستخدمة في بقية الكود، بحيث تُحفظ
+   بياناتك فعليًا داخل متصفحك ولا تُحذف عند تحديث الصفحة.
+   ===================================================================== */
+const LocalDeviceStorage = (function(){
+  const DB_NAME = 'lessons-app-db';
+  const STORE = 'kv';
+  const LS_PREFIX = '__lessons_app_kv__:';
+  let dbPromise = null;
+
+  function openDb(){
+    if(dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject)=>{
+      if(!('indexedDB' in window)){ reject(new Error('IndexedDB غير مدعوم في هذا المتصفح')); return; }
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = ()=>{ if(!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE); };
+      req.onsuccess = ()=> resolve(req.result);
+      req.onerror = ()=> reject(req.error || new Error('تعذّر فتح قاعدة البيانات المحلية'));
+    });
+    return dbPromise;
+  }
+  function idbGet(key){
+    return openDb().then(db=> new Promise((resolve,reject)=>{
+      const tx = db.transaction(STORE,'readonly');
+      const rq = tx.objectStore(STORE).get(key);
+      rq.onsuccess = ()=> resolve(rq.result);
+      rq.onerror = ()=> reject(rq.error);
+    }));
+  }
+  function idbSet(key, value){
+    return openDb().then(db=> new Promise((resolve,reject)=>{
+      const tx = db.transaction(STORE,'readwrite');
+      tx.objectStore(STORE).put(value, key);
+      tx.oncomplete = ()=> resolve();
+      tx.onerror = ()=> reject(tx.error);
+    }));
+  }
+  function idbDelete(key){
+    return openDb().then(db=> new Promise((resolve,reject)=>{
+      const tx = db.transaction(STORE,'readwrite');
+      tx.objectStore(STORE).delete(key);
+      tx.oncomplete = ()=> resolve();
+      tx.onerror = ()=> reject(tx.error);
+    }));
+  }
+  function idbKeys(){
+    return openDb().then(db=> new Promise((resolve,reject)=>{
+      const tx = db.transaction(STORE,'readonly');
+      const rq = tx.objectStore(STORE).getAllKeys();
+      rq.onsuccess = ()=> resolve(rq.result);
+      rq.onerror = ()=> reject(rq.error);
+    }));
+  }
+  function lsGet(key){
+    const raw = localStorage.getItem(LS_PREFIX+key);
+    if(raw===null) throw new Error('key not found: '+key);
+    return raw;
+  }
+  function lsSet(key, value){ localStorage.setItem(LS_PREFIX+key, value); }
+  function lsDelete(key){ localStorage.removeItem(LS_PREFIX+key); }
+  function lsKeys(){
+    const keys=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith(LS_PREFIX)) keys.push(k.slice(LS_PREFIX.length));
+    }
+    return keys;
+  }
+
+  return {
+    async get(key, shared){
+      try{
+        const val = await idbGet(key);
+        if(val===undefined) throw new Error('key not found: '+key);
+        return {key, value: val, shared: !!shared};
+      }catch(e){
+        const val = lsGet(key); // يرمي استثناءً إن لم يوجد أيضًا هنا
+        return {key, value: val, shared: !!shared};
+      }
+    },
+    async set(key, value, shared){
+      try{ await idbSet(key, value); }
+      catch(e){ lsSet(key, value); }
+      return {key, value, shared: !!shared};
+    },
+    async delete(key, shared){
+      try{ await idbDelete(key); }catch(e){}
+      try{ lsDelete(key); }catch(e){}
+      return {key, deleted:true, shared: !!shared};
+    },
+    async list(prefix, shared){
+      let keys = [];
+      try{ keys = await idbKeys(); }catch(e){ keys = lsKeys(); }
+      if(prefix) keys = keys.filter(k=> String(k).startsWith(prefix));
+      return {keys, prefix, shared: !!shared};
+    }
+  };
+})();
+window.storage = LocalDeviceStorage;
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function normalizeLesson(l){
+  if(!l.footnotes) l.footnotes = [];
+  if(!l.audioClips) l.audioClips = [];
+  if(!l.status) l.status = 'new';
+  if(!l.categoryIds) l.categoryIds = [];
+  return l;
+}
+function normalizeCategory(c){
+  if(c.parentId===undefined) c.parentId = null;
+  return c;
+}
+
+async function loadState(){
+  try{
+    const res = await window.storage.get('app-data', false);
+    if(res && res.value){
+      state = JSON.parse(res.value);
+      if(!state.categories) state.categories = [];
+      if(!state.lessons) state.lessons = [];
+      if(!state.glossary) state.glossary = [];
+      if(!state.settings) state.settings = { theme:'light', apiKeys:{anthropic:'',openai:'',google:''} };
+      if(!state.settings.apiKeys) state.settings.apiKeys = { anthropic:'', openai:'', google:'' };
+      state.categories.forEach(normalizeCategory);
+      state.lessons.forEach(normalizeLesson);
+    }
+  }catch(e){
+    state = { categories: [
+        {id:'fiqh', name:'الفقه', color:PALETTE[0], parentId:null},
+        {id:'tafsir', name:'التفسير', color:PALETTE[1], parentId:null},
+      ], lessons: [], glossary: [], settings: { theme:'light', apiKeys:{anthropic:'',openai:'',google:''} } };
+  }
+  applyTheme(state.settings.theme || 'light');
+  renderCategories();
+  renderLessonGrid();
+}
+
+async function persist(){
+  try{
+    await window.storage.set('app-data', JSON.stringify(state), false);
+  }catch(e){
+    console.error('تعذر الحفظ', e);
+  }
+}
+
+function colorForCat(id){
+  const c = state.categories.find(c=>c.id===id);
+  return c ? c.color : '#999';
+}
+
+/* ===== الوضع الليلي ===== */
+function applyTheme(theme){
+  document.body.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').textContent = theme==='dark' ? '☀️' : '🌙';
+}
+document.getElementById('themeToggle').addEventListener('click', async ()=>{
+  const cur = state.settings.theme==='dark' ? 'light' : 'dark';
+  state.settings.theme = cur;
+  applyTheme(cur);
+  await persist();
+});
+
+/* ===== إعدادات مفاتيح الذكاء الاصطناعي ===== */
+document.getElementById('aiSettingsBtn').addEventListener('click', ()=>{
+  const keys = (state.settings && state.settings.apiKeys) || {};
+  document.getElementById('keyAnthropic').value = keys.anthropic || '';
+  document.getElementById('keyOpenai').value = keys.openai || '';
+  document.getElementById('keyGoogle').value = keys.google || '';
+  document.getElementById('aiSettingsModal').classList.add('active');
+});
+document.getElementById('closeAiSettings').onclick = ()=> document.getElementById('aiSettingsModal').classList.remove('active');
+document.getElementById('saveAiSettingsBtn').addEventListener('click', async ()=>{
+  if(!state.settings.apiKeys) state.settings.apiKeys = {};
+  state.settings.apiKeys.anthropic = document.getElementById('keyAnthropic').value.trim();
+  state.settings.apiKeys.openai = document.getElementById('keyOpenai').value.trim();
+  state.settings.apiKeys.google = document.getElementById('keyGoogle').value.trim();
+  await persist();
+  document.getElementById('aiSettingsModal').classList.remove('active');
+});
+
+/* ===== Categories (nested) ===== */
+function renderCategories(){
+  const list = document.getElementById('catList');
+  list.innerHTML = '';
+
+  const allCount = state.lessons.length;
+  list.appendChild(makeCatItem({id:'all', name:'كل الدروس', color:'#EDE8D8'}, allCount, true, false));
+
+  const topLevel = state.categories.filter(c=>!c.parentId).sort((a,b)=> a.name.localeCompare(b.name, 'ar'));
+  topLevel.forEach(cat=>{
+    const count = state.lessons.filter(l=>l.categoryIds.includes(cat.id)).length;
+    list.appendChild(makeCatItem(cat, count, false, false));
+    const children = state.categories.filter(c=>c.parentId===cat.id).sort((a,b)=> a.name.localeCompare(b.name,'ar'));
+    children.forEach(child=>{
+      const ccount = state.lessons.filter(l=>l.categoryIds.includes(child.id)).length;
+      list.appendChild(makeCatItem(child, ccount, false, true));
+    });
+  });
+
+  const parentSelect = document.getElementById('newCatParent');
+  const prevVal = parentSelect.value;
+  parentSelect.innerHTML = '<option value="">تصنيف رئيسي</option>';
+  topLevel.forEach(cat=>{
+    const opt = document.createElement('option');
+    opt.value = cat.id; opt.textContent = 'ضمن: ' + cat.name;
+    parentSelect.appendChild(opt);
+  });
+  parentSelect.value = prevVal;
+}
+
+function makeCatItem(cat, count, isAll, isChild){
+  const div = document.createElement('div');
+  div.className = 'cat-item' + (currentCategoryFilter===cat.id ? ' active' : '') + (isChild ? ' child' : '');
+  const left = document.createElement('div');
+  left.className = 'cat-left';
+  const dot = document.createElement('span');
+  dot.className = 'dot';
+  dot.style.background = isAll ? '#EDE8D8' : cat.color;
+  const name = document.createElement('span');
+  name.className = 'name';
+  name.textContent = (isChild ? '↳ ' : '') + cat.name;
+  left.appendChild(dot); left.appendChild(name);
+  const right = document.createElement('div');
+  right.style.display='flex'; right.style.alignItems='center'; right.style.gap='4px';
+  const countEl = document.createElement('span');
+  countEl.className='count';
+  countEl.textContent = count;
+  right.appendChild(countEl);
+  if(!isAll){
+    const del = document.createElement('button');
+    del.className='del-cat';
+    del.textContent='✕';
+    del.title='حذف التصنيف';
+    del.onclick = (e)=>{ e.stopPropagation(); deleteCategory(cat.id); };
+    right.appendChild(del);
+  }
+  div.appendChild(left); div.appendChild(right);
+  div.onclick = ()=>{ currentCategoryFilter = cat.id; renderCategories(); renderLessonGrid(); };
+  return div;
+}
+
+async function deleteCategory(catId){
+  const cat = state.categories.find(c=>c.id===catId);
+  if(!cat) return;
+  if(!confirm(`حذف تصنيف "${cat.name}"؟ لن تُحذف الدروس، وستُرفَّع تصنيفاته الفرعية (إن وجدت) إلى مستوى رئيسي.`)) return;
+  state.categories.forEach(c=>{ if(c.parentId===catId) c.parentId = null; });
+  state.categories = state.categories.filter(c=>c.id!==catId);
+  state.lessons.forEach(l=> l.categoryIds = l.categoryIds.filter(id=>id!==catId));
+  if(currentCategoryFilter===catId) currentCategoryFilter='all';
+  await persist();
+  renderCategories();
+  renderLessonGrid();
+}
+
+document.getElementById('addCatBtn').onclick = addCategory;
+document.getElementById('newCatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addCategory(); });
+async function addCategory(){
+  const input = document.getElementById('newCatInput');
+  const parentSelect = document.getElementById('newCatParent');
+  const name = input.value.trim();
+  if(!name) return;
+  const color = PALETTE[state.categories.length % PALETTE.length];
+  state.categories.push({id:uid(), name, color, parentId: parentSelect.value || null});
+  input.value='';
+  await persist();
+  renderCategories();
+}
+
+/* ===== نسخ احتياطي / استرجاع ===== */
+document.getElementById('backupBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  a.href = url;
+  a.download = `نبذ-مختصرة-نسخة-احتياطية-${stamp}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+document.getElementById('restoreBtn').addEventListener('click', ()=>{
+  document.getElementById('restoreFileInput').click();
+});
+document.getElementById('restoreFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!parsed.categories || !parsed.lessons){ alert('الملف لا يحتوي على بيانات صالحة.'); return; }
+      if(!confirm('سيتم استبدال كل بياناتك الحالية بمحتوى هذا الملف. هل تريد المتابعة؟')) return;
+      state = {
+        categories: parsed.categories || [],
+        lessons: parsed.lessons || [],
+        glossary: parsed.glossary || [],
+        settings: parsed.settings || { theme:'light', apiKeys:{anthropic:'',openai:'',google:''} }
+      };
+      if(!state.settings.apiKeys) state.settings.apiKeys = { anthropic:'', openai:'', google:'' };
+      state.categories.forEach(normalizeCategory);
+      state.lessons.forEach(normalizeLesson);
+      applyTheme(state.settings.theme || 'light');
+      await persist();
+      renderCategories();
+      renderLessonGrid();
+      alert('تم الاسترجاع بنجاح.');
+    }catch(err){
+      alert('تعذّرت قراءة الملف. تأكد أنه ملف JSON صادر من هذا التطبيق.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ===== Lesson grid ===== */
+function renderLessonGrid(){
+  const grid = document.getElementById('lessonGrid');
+  const empty = document.getElementById('emptyState');
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const title = document.getElementById('viewTitle');
+
+  title.textContent = currentCategoryFilter==='all' ? 'كل الدروس' :
+    (state.categories.find(c=>c.id===currentCategoryFilter)?.name || 'دروس');
+
+  let lessons = state.lessons.slice().sort((a,b)=> b.updatedAt - a.updatedAt);
+  if(currentCategoryFilter!=='all'){
+    lessons = lessons.filter(l=>l.categoryIds.includes(currentCategoryFilter));
+  }
+  if(query){
+    lessons = lessons.filter(l=>{
+      const inTitle = l.title.toLowerCase().includes(query);
+      const inContent = stripHtml(l.content).toLowerCase().includes(query);
+      const inTags = l.categoryIds.some(cid=>{
+        const c = state.categories.find(cc=>cc.id===cid);
+        return c && c.name.toLowerCase().includes(query);
+      });
+      const inFootnotes = (l.footnotes||[]).some(fn=> fn.text.toLowerCase().includes(query));
+      const inStatus = (STATUS_LABELS[l.status]||'').toLowerCase().includes(query);
+      return inTitle || inContent || inTags || inFootnotes || inStatus;
+    });
+  }
+
+  grid.innerHTML = '';
+  if(lessons.length===0){
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+
+  lessons.forEach(lesson=>{
+    const card = document.createElement('div');
+    card.className='lesson-card';
+    card.onclick = ()=> openLesson(lesson.id);
+
+    const h3 = document.createElement('h3');
+    h3.textContent = lesson.title || 'بلا عنوان';
+
+    const excerpt = document.createElement('div');
+    excerpt.className='excerpt';
+    excerpt.textContent = stripHtml(lesson.content).slice(0,180);
+
+    const tags = document.createElement('div');
+    tags.className='tags';
+    lesson.categoryIds.forEach(cid=>{
+      const cat = state.categories.find(c=>c.id===cid);
+      if(!cat) return;
+      const chip = document.createElement('span');
+      chip.className='chip';
+      chip.style.background = cat.color;
+      chip.textContent = cat.name;
+      tags.appendChild(chip);
+    });
+    const statusChip = document.createElement('span');
+    statusChip.className = 'status-chip ' + (lesson.status||'new');
+    statusChip.textContent = STATUS_LABELS[lesson.status] || STATUS_LABELS.new;
+    tags.appendChild(statusChip);
+
+    const meta = document.createElement('div');
+    meta.className='meta';
+    const metaText = document.createElement('span');
+    metaText.textContent = 'آخر تعديل: ' + formatDate(lesson.updatedAt);
+    const icons = document.createElement('span');
+    icons.className='meta-icons';
+    let iconsStr = '';
+    if((lesson.footnotes||[]).length) iconsStr += `📝${lesson.footnotes.length} `;
+    if((lesson.audioClips||[]).length) iconsStr += `🎙️${lesson.audioClips.length}`;
+    icons.textContent = iconsStr;
+    meta.appendChild(metaText); meta.appendChild(icons);
+
+    card.appendChild(h3);
+    card.appendChild(excerpt);
+    card.appendChild(tags);
+    card.appendChild(meta);
+    grid.appendChild(card);
+  });
+}
+
+function stripHtml(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  return tmp.textContent || '';
+}
+function formatDate(ts){
+  const d = new Date(ts);
+  return d.toLocaleDateString('ar-EG', {year:'numeric', month:'long', day:'numeric'});
+}
+function formatTime(ts){
+  const d = new Date(ts);
+  return d.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+}
+
+document.getElementById('searchInput').addEventListener('input', renderLessonGrid);
+
+/* ===== Editor ===== */
+document.getElementById('newLessonBtn').onclick = ()=>{
+  const lesson = normalizeLesson({
+    id: uid(),
+    title: '',
+    content: '',
+    categoryIds: currentCategoryFilter!=='all' ? [currentCategoryFilter] : [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  });
+  state.lessons.push(lesson);
+  openLesson(lesson.id, true);
+};
+
+function openLesson(id, isNew){
+  currentLessonId = id;
+  const lesson = normalizeLesson(state.lessons.find(l=>l.id===id));
+  document.getElementById('titleInput').value = lesson.title;
+  document.getElementById('editable').innerHTML = lesson.content;
+  document.getElementById('statusSelect').value = lesson.status;
+  renderCatPicker();
+  renderFootnotesPanel();
+  renderAudioPanel();
+  updateMetrics();
+  document.getElementById('listView').style.display='none';
+  document.getElementById('editorView').classList.add('active');
+  document.getElementById('saveStatus').textContent='';
+  if(isNew) setTimeout(()=>document.getElementById('titleInput').focus(), 50);
+}
+
+function closeEditor(){
+  document.getElementById('editorView').classList.remove('active');
+  document.getElementById('listView').style.display='block';
+  currentLessonId = null;
+  renderCategories();
+  renderLessonGrid();
+}
+document.getElementById('backBtn').onclick = closeEditor;
+
+document.getElementById('delLessonBtn').onclick = async ()=>{
+  if(!confirm('هل تريد حذف هذا الدرس نهائيًا؟')) return;
+  state.lessons = state.lessons.filter(l=>l.id!==currentLessonId);
+  await persist();
+  closeEditor();
+};
+
+document.getElementById('statusSelect').addEventListener('change', e=>{
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(!lesson) return;
+  lesson.status = e.target.value;
+  scheduleSave();
+});
+
+function renderCatPicker(){
+  const picker = document.getElementById('catPicker');
+  picker.innerHTML = '<span class="label">التصنيفات:</span>';
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(state.categories.length===0){
+    const hint = document.createElement('span');
+    hint.style.fontSize='12.5px'; hint.style.color='#9C9484';
+    hint.textContent = 'أضف تصنيفًا من القائمة الجانبية أولًا.';
+    picker.appendChild(hint);
+    return;
+  }
+  const ordered = state.categories.slice().sort((a,b)=>{
+    const pa = a.parentId || a.id, pb = b.parentId || b.id;
+    if(pa!==pb) return pa.localeCompare ? pa.localeCompare(pb) : 0;
+    return (a.parentId?1:0) - (b.parentId?1:0);
+  });
+  state.categories.slice().sort((a,b)=> a.name.localeCompare(b.name,'ar')).forEach(cat=>{
+    const chip = document.createElement('span');
+    const selected = lesson.categoryIds.includes(cat.id);
+    chip.className = 'pick-chip' + (selected ? ' selected' : '');
+    chip.textContent = (cat.parentId ? '↳ ' : '') + cat.name;
+    if(selected) chip.style.background = cat.color;
+    chip.onclick = ()=>{
+      if(lesson.categoryIds.includes(cat.id)){
+        lesson.categoryIds = lesson.categoryIds.filter(id=>id!==cat.id);
+      } else {
+        lesson.categoryIds.push(cat.id);
+      }
+      scheduleSave();
+      renderCatPicker();
+    };
+    picker.appendChild(chip);
+  });
+}
+
+function scheduleSave(){
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(!lesson) return;
+  lesson.title = document.getElementById('titleInput').value;
+  lesson.content = document.getElementById('editable').innerHTML;
+  lesson.updatedAt = Date.now();
+  document.getElementById('saveStatus').textContent = 'جارٍ الحفظ…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    await persist();
+    document.getElementById('saveStatus').textContent = 'تم الحفظ ✓ · ' + formatTime(Date.now());
+  }, 250);
+}
+
+/* حفظ نهائي فوري: يتخطى المؤقّت ويحفظ الآن مباشرة */
+document.getElementById('saveFinalBtn').addEventListener('click', async ()=>{
+  clearTimeout(saveTimer);
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(lesson){
+    lesson.title = document.getElementById('titleInput').value;
+    lesson.content = document.getElementById('editable').innerHTML;
+    lesson.updatedAt = Date.now();
+  }
+  const btn = document.getElementById('saveFinalBtn');
+  btn.textContent = 'جارٍ الحفظ…';
+  await persist();
+  document.getElementById('saveStatus').textContent = 'تم الحفظ النهائي ✓ · ' + formatTime(Date.now());
+  btn.textContent = '✓ تم الحفظ';
+  btn.classList.add('just-saved');
+  setTimeout(()=>{ btn.textContent = '💾 حفظ نهائي'; btn.classList.remove('just-saved'); }, 1400);
+});
+
+document.getElementById('titleInput').addEventListener('input', scheduleSave);
+document.getElementById('editable').addEventListener('input', ()=>{ scheduleSave(); updateMetrics(); });
+
+/* ===== مؤشرات الحجم والوقت ===== */
+function updateMetrics(){
+  const text = stripHtml(document.getElementById('editable').innerHTML);
+  const words = (text.trim().match(/\S+/g) || []).length;
+  const readMin = words ? Math.max(1, Math.round(words/180)) : 0;
+  const talkMin = words ? Math.max(1, Math.round(words/130)) : 0;
+  let sizeLabel = 'قصير';
+  if(words>1200) sizeLabel = 'مطوّل';
+  else if(words>400) sizeLabel = 'متوسط';
+  document.getElementById('metricsBadge').textContent = words===0 ? '' :
+    `📖 ${words} كلمة · وقت قراءة ~${readMin} د · وقت إلقاء ~${talkMin} د · الحجم: ${sizeLabel}`;
+}
+
+/* ===== Toolbar (تنسيق أساسي) ===== */
+document.querySelectorAll('.toolbar button[data-cmd]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.getElementById('editable').focus();
+    document.execCommand(btn.dataset.cmd, false, null);
+    scheduleSave();
+  });
+});
+
+document.getElementById('blockSelect').addEventListener('change', e=>{
+  document.getElementById('editable').focus();
+  document.execCommand('formatBlock', false, e.target.value);
+  scheduleSave();
+});
+document.getElementById('fontSelect').addEventListener('change', e=>{
+  document.getElementById('editable').focus();
+  document.execCommand('fontName', false, e.target.value);
+  scheduleSave();
+});
+document.getElementById('sizeSelect').addEventListener('change', e=>{
+  document.getElementById('editable').focus();
+  document.execCommand('fontSize', false, e.target.value);
+  scheduleSave();
+});
+document.getElementById('foreColor').addEventListener('input', e=>{
+  document.getElementById('editable').focus();
+  document.execCommand('foreColor', false, e.target.value);
+  scheduleSave();
+});
+document.getElementById('hiliteColor').addEventListener('input', e=>{
+  document.getElementById('editable').focus();
+  document.execCommand('hiliteColor', false, e.target.value);
+  scheduleSave();
+});
+
+document.getElementById('insertLinkBtn').addEventListener('click', ()=>{
+  const url = prompt('أدخل رابط:');
+  if(url){
+    document.getElementById('editable').focus();
+    document.execCommand('createLink', false, url);
+    scheduleSave();
+  }
+});
+
+document.getElementById('insertImgBtn').addEventListener('click', ()=>{
+  document.getElementById('imgFileInput').click();
+});
+document.getElementById('imgFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    document.getElementById('editable').focus();
+    document.execCommand('insertImage', false, reader.result);
+    scheduleSave();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+/* ===== إدراج جدول ===== */
+document.getElementById('insertTableBtn').addEventListener('click', ()=>{
+  const dims = prompt('عدد الصفوف × الأعمدة (مثال: 3x4):', '3x4');
+  if(!dims) return;
+  const m = dims.toLowerCase().match(/(\d+)\s*[x×]\s*(\d+)/);
+  const rows = m ? Math.min(20, parseInt(m[1])) : 3;
+  const cols = m ? Math.min(10, parseInt(m[2])) : 3;
+  let html = '<table>';
+  for(let r=0;r<rows;r++){
+    html += '<tr>';
+    for(let c=0;c<cols;c++){
+      html += r===0 ? `<th>عنوان ${c+1}</th>` : '<td>&nbsp;</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</table><p><br></p>';
+  document.getElementById('editable').focus();
+  document.execCommand('insertHTML', false, html);
+  scheduleSave();
+});
+
+/* ===== خطوط الجهاز (Local Fonts API) ===== */
+document.getElementById('localFontsBtn').addEventListener('click', async ()=>{
+  if(!('queryLocalFonts' in window)){
+    alert('متصفحك لا يدعم استكشاف خطوط الجهاز حاليًا. هذه الميزة متاحة على Chrome/Edge لسطح المكتب ضمن اتصال آمن (HTTPS) فقط.');
+    return;
+  }
+  try{
+    const fonts = await window.queryLocalFonts();
+    const families = [...new Set(fonts.map(f=>f.family))].sort((a,b)=>a.localeCompare(b));
+    const select = document.getElementById('fontSelect');
+    const oldGroup = select.querySelector('optgroup[data-local]');
+    if(oldGroup) oldGroup.remove();
+    const group = document.createElement('optgroup');
+    group.label = 'خطوط جهازك';
+    group.dataset.local = '1';
+    families.forEach(fam=>{
+      const opt = document.createElement('option');
+      opt.value = `'${fam.replace(/'/g,"")}'`;
+      opt.textContent = fam;
+      group.appendChild(opt);
+    });
+    select.appendChild(group);
+    alert(`تم العثور على ${families.length} خطًا مثبتًا وأُضيفت إلى قائمة الخطوط.`);
+  }catch(e){
+    alert('تعذّر الوصول إلى خطوط الجهاز. يلزم منح إذن المتصفح عند الطلب.');
+  }
+});
+
+/* ===== الرموز الإسلامية والأقواس الذكية ===== */
+function insertGlyph(g){
+  document.getElementById('editable').focus();
+  document.execCommand('insertText', false, g);
+  scheduleSave();
+}
+function wrapSelectionOrInsert(open, close){
+  const ed = document.getElementById('editable');
+  ed.focus();
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount && !sel.getRangeAt(0).collapsed){
+    const text = sel.getRangeAt(0).toString();
+    document.execCommand('insertText', false, open+text+close);
+  } else {
+    document.execCommand('insertText', false, open+close);
+  }
+  scheduleSave();
+}
+document.getElementById('symPbuh').onclick = ()=> insertGlyph('ﷺ');
+document.getElementById('symAzza').onclick = ()=> insertGlyph('ﷻ');
+document.getElementById('symMosque').onclick = ()=> insertGlyph('🕌');
+document.getElementById('symBook').onclick = ()=> insertGlyph('📚');
+document.getElementById('symAyah').onclick = ()=> wrapSelectionOrInsert('﴿','﴾');
+document.getElementById('symQuote').onclick = ()=> wrapSelectionOrInsert('«','»');
+
+/* ===== الحواشي (Footnotes) ===== */
+document.getElementById('addFootnoteBtn').addEventListener('click', ()=>{
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(!lesson) return;
+  const text = prompt('نص الحاشية:');
+  if(!text) return;
+  const fid = uid();
+  lesson.footnotes.push({id:fid, text});
+  const num = lesson.footnotes.length;
+  document.getElementById('editable').focus();
+  document.execCommand('insertHTML', false, `<sup class="fn-ref" data-fn="${fid}" contenteditable="false">[${num}]</sup>`);
+  renderFootnotesPanel();
+  scheduleSave();
+});
+
+function renderFootnotesPanel(){
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  const panel = document.getElementById('footnotesPanel');
+  if(!lesson || !lesson.footnotes || lesson.footnotes.length===0){ panel.style.display='none'; panel.innerHTML=''; return; }
+  panel.style.display='block';
+  panel.innerHTML = '<div class="fn-title">الحواشي</div>';
+  lesson.footnotes.forEach((fn, idx)=>{
+    const row = document.createElement('div');
+    row.className='fn-row';
+    const num = document.createElement('span'); num.className='fn-num'; num.textContent = `[${idx+1}]`;
+    const ta = document.createElement('textarea'); ta.className='fn-text'; ta.value = fn.text;
+    ta.addEventListener('input', ()=>{ fn.text = ta.value; scheduleSave(); });
+    const del = document.createElement('button'); del.className='fn-del'; del.textContent='✕'; del.title='حذف الحاشية';
+    del.onclick = ()=>{
+      const ed = document.getElementById('editable');
+      const ref = ed.querySelector(`.fn-ref[data-fn="${fn.id}"]`);
+      if(ref) ref.remove();
+      lesson.footnotes = lesson.footnotes.filter(f=>f.id!==fn.id);
+      renderFootnotesPanel();
+      scheduleSave();
+    };
+    row.appendChild(num); row.appendChild(ta); row.appendChild(del);
+    panel.appendChild(row);
+  });
+}
+
+/* ===== معجم المفردات والبطاقات ===== */
+document.getElementById('addGlossaryBtn').addEventListener('click', ()=>{
+  const sel = window.getSelection();
+  let term = sel && sel.toString().trim();
+  if(!term) term = prompt('أدخل المصطلح:');
+  if(!term) return;
+  const note = prompt('توضيح مختصر (اختياري):', '') || '';
+  state.glossary.push({id:uid(), term, note, lessonId: currentLessonId, createdAt: Date.now()});
+  persist();
+  alert('أُضيف المصطلح إلى "مصطلحاتي".');
+});
+function renderGlossaryModal(){
+  const list = document.getElementById('glossaryList');
+  list.innerHTML='';
+  if(state.glossary.length===0){
+    list.innerHTML = '<p style="color:var(--ink-soft);font-size:13.5px;">لا توجد مصطلحات محفوظة بعد. حدّد كلمة داخل أي درس واضغط زر "📌 مصطلح".</p>';
+    return;
+  }
+  state.glossary.slice().reverse().forEach(g=>{
+    const card = document.createElement('div');
+    card.className='flashcard';
+    const front = document.createElement('div'); front.className='fc-front'; front.textContent = g.term;
+    const back = document.createElement('div'); back.className='fc-back'; back.textContent = g.note || 'بدون توضيح';
+    const inner = document.createElement('div'); inner.className='fc-inner';
+    inner.appendChild(front); inner.appendChild(back);
+    card.appendChild(inner);
+    card.onclick = ()=> card.classList.toggle('flipped');
+    list.appendChild(card);
+  });
+}
+document.getElementById('openGlossaryBtn').onclick = ()=>{
+  renderGlossaryModal();
+  document.getElementById('glossaryModal').classList.add('active');
+};
+document.getElementById('closeGlossary').onclick = ()=> document.getElementById('glossaryModal').classList.remove('active');
+
+/* ===== ربط الدروس (Backlinks) ===== */
+document.getElementById('linkLessonBtn').addEventListener('click', openLessonPickerModal);
+function openLessonPickerModal(){
+  const modal = document.getElementById('lessonPickerModal');
+  const listEl = document.getElementById('lessonPickerList');
+  const searchEl = document.getElementById('lessonPickerSearch');
+  function renderList(q){
+    listEl.innerHTML='';
+    const query = (q||'').toLowerCase();
+    const others = state.lessons.filter(l=> l.id!==currentLessonId && (!query || (l.title||'').toLowerCase().includes(query)));
+    if(others.length===0){ listEl.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">لا توجد دروس مطابقة.</p>'; return; }
+    others.forEach(l=>{
+      const item = document.createElement('div');
+      item.className='picker-item';
+      item.textContent = l.title || 'بلا عنوان';
+      item.onclick = ()=>{
+        document.getElementById('editable').focus();
+        document.execCommand('insertHTML', false, `<a href="#" class="lesson-link" data-lesson-id="${l.id}" title="اضغط مع Ctrl للانتقال">${(l.title||'بلا عنوان')}</a>&nbsp;`);
+        scheduleSave();
+        modal.classList.remove('active');
+      };
+      listEl.appendChild(item);
+    });
+  }
+  renderList('');
+  searchEl.value='';
+  searchEl.oninput = ()=> renderList(searchEl.value);
+  modal.classList.add('active');
+}
+document.getElementById('closeLessonPicker').onclick = ()=> document.getElementById('lessonPickerModal').classList.remove('active');
+
+document.getElementById('editable').addEventListener('click', (e)=>{
+  const link = e.target.closest('.lesson-link');
+  if(!link) return;
+  e.preventDefault();
+  if(e.ctrlKey || e.metaKey){
+    const id = link.dataset.lessonId;
+    if(state.lessons.find(l=>l.id===id)){
+      clearTimeout(saveTimer);
+      const lesson = state.lessons.find(l=>l.id===currentLessonId);
+      if(lesson){
+        lesson.title = document.getElementById('titleInput').value;
+        lesson.content = document.getElementById('editable').innerHTML;
+        lesson.updatedAt = Date.now();
+      }
+      persist().then(()=> openLesson(id));
+    }
+  }
+});
+
+/* ===== الملاحظات الصوتية ===== */
+document.getElementById('recordBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('recordBtn');
+  if(mediaRecorder && mediaRecorder.state==='recording'){
+    mediaRecorder.stop();
+    return;
+  }
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e=> audioChunks.push(e.data);
+    mediaRecorder.onstop = ()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        const lesson = state.lessons.find(l=>l.id===currentLessonId);
+        if(lesson){
+          lesson.audioClips.push({id:uid(), dataUrl: reader.result, createdAt: Date.now()});
+          renderAudioPanel();
+          scheduleSave();
+        }
+      };
+      reader.readAsDataURL(blob);
+      btn.textContent = '🎙️ تسجيل صوتي';
+      btn.classList.remove('recording');
+    };
+    mediaRecorder.start();
+    btn.textContent = '⏹ إيقاف التسجيل';
+    btn.classList.add('recording');
+  }catch(e){
+    alert('تعذّر الوصول إلى الميكروفون. تأكد من منح إذن المتصفح ومن أن الجهاز يحتوي ميكروفون.');
+  }
+});
+
+/* رفع ملف صوتي جاهز من الجهاز (بدل التسجيل المباشر) */
+document.getElementById('uploadAudioBtn').addEventListener('click', ()=>{
+  if(!currentLessonId){ alert('افتح درسًا أولًا.'); return; }
+  document.getElementById('audioFileInput').click();
+});
+document.getElementById('audioFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  if(!file.type.startsWith('audio/')){ alert('يرجى اختيار ملف صوتي صالح.'); return; }
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const lesson = state.lessons.find(l=>l.id===currentLessonId);
+    if(lesson){
+      lesson.audioClips.push({id:uid(), dataUrl: reader.result, createdAt: Date.now(), fileName: file.name});
+      renderAudioPanel();
+      scheduleSave();
+    }
+  };
+  reader.onerror = ()=> alert('تعذّرت قراءة الملف الصوتي.');
+  reader.readAsDataURL(file);
+});
+
+function renderAudioPanel(){
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  const panel = document.getElementById('audioPanel');
+  if(!lesson || !lesson.audioClips || lesson.audioClips.length===0){ panel.style.display='none'; panel.innerHTML=''; return; }
+  panel.style.display='block';
+  panel.innerHTML = '<div class="fn-title">التسجيلات الصوتية</div>';
+  lesson.audioClips.forEach(clip=>{
+    const row = document.createElement('div'); row.className='audio-row';
+    const audio = document.createElement('audio'); audio.controls = true; audio.src = clip.dataUrl;
+    const analyze = document.createElement('button'); analyze.className='fn-del'; analyze.textContent='🧠 تحليل'; analyze.title='تفريغ نصي وتحليل التسجيل بالذكاء الاصطناعي';
+    analyze.onclick = ()=> analyzeAudioClip(clip, analyze);
+    const del = document.createElement('button'); del.className='fn-del'; del.textContent='✕'; del.title='حذف التسجيل';
+    del.onclick = ()=>{
+      lesson.audioClips = lesson.audioClips.filter(c=>c.id!==clip.id);
+      renderAudioPanel();
+      scheduleSave();
+    };
+    row.appendChild(audio); row.appendChild(analyze); row.appendChild(del);
+    panel.appendChild(row);
+  });
+}
+
+/* ===== أدوات الذكاء الاصطناعي ===== */
+function setAiBusy(busy, msg){
+  document.getElementById('aiStatus').textContent = busy ? (msg || 'جارٍ التنفيذ…') : '';
+  ['aiFormatBtn','aiSummaryBtn','aiMatnBtn'].forEach(id=>{
+    document.getElementById(id).disabled = busy;
+  });
+}
+function getApiKeys(){
+  return (state.settings && state.settings.apiKeys) || { anthropic:'', openai:'', google:'' };
+}
+function anyApiKeyConfigured(){
+  const k = getApiKeys();
+  return !!(k.anthropic || k.openai || k.google);
+}
+
+/* --- استدعاء نصّي مباشر لكل مزوّد --- */
+async function anthropicChat(prompt){
+  const key = getApiKeys().anthropic;
+  if(!key) throw new Error('no-key');
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-5',
+      max_tokens: 1500,
+      messages: [{ role:'user', content: prompt }]
+    })
+  });
+  if(!response.ok) throw new Error('anthropic-http-'+response.status);
+  const data = await response.json();
+  const text = data.content && data.content.map(c=> c.text || '').join('\n');
+  if(!text || !text.trim()) throw new Error('anthropic-empty');
+  return text;
+}
+async function openaiChat(prompt){
+  const key = getApiKeys().openai;
+  if(!key) throw new Error('no-key');
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      max_tokens: 1500,
+      messages: [{ role:'user', content: prompt }]
+    })
+  });
+  if(!response.ok) throw new Error('openai-http-'+response.status);
+  const data = await response.json();
+  const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+  if(!text || !text.trim()) throw new Error('openai-empty');
+  return text;
+}
+async function googleChat(prompt){
+  const key = getApiKeys().google;
+  if(!key) throw new Error('no-key');
+  const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(key), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  if(!response.ok) throw new Error('google-http-'+response.status);
+  const data = await response.json();
+  const cand = data.candidates && data.candidates[0];
+  const text = cand && cand.content && cand.content.parts && cand.content.parts.map(p=>p.text||'').join('\n');
+  if(!text || !text.trim()) throw new Error('google-empty');
+  return text;
+}
+
+/* يجرّب كلود أولًا، فإن تعذّر (لا يوجد مفتاح، أو خطأ اتصال) ينتقل تلقائيًا لمزوّد آخر مُفعّل */
+const TEXT_PROVIDERS = [
+  { key:'anthropic', label:'Claude', fn: anthropicChat },
+  { key:'openai', label:'ChatGPT', fn: openaiChat },
+  { key:'google', label:'Gemini', fn: googleChat }
+];
+async function callAIText(prompt){
+  if(!anyApiKeyConfigured()){
+    throw new Error('لا يوجد أي مفتاح API مُفعّل. افتح «⚙️ مفاتيح الذكاء الاصطناعي» في الشريط الجانبي وأدخل مفتاحًا واحدًا على الأقل.');
+  }
+  const errors = [];
+  for(const p of TEXT_PROVIDERS){
+    try{
+      const text = await p.fn(prompt);
+      return { text, provider: p.label };
+    }catch(e){
+      errors.push(p.label + ': ' + e.message);
+    }
+  }
+  throw new Error('تعذّر تنفيذ الطلب عبر جميع مزوّدي الذكاء الاصطناعي المُفعّلين لديك:\n' + errors.join('\n') + '\nراجع صحة المفاتيح في الإعدادات.');
+}
+
+/* --- التفريغ الصوتي والتحليل (لا يدعم كلود الصوت مباشرة، فنبدأ بـ Gemini ثم ChatGPT/Whisper) --- */
+function dataUrlToBase64(dataUrl){ return dataUrl.substring(dataUrl.indexOf(',')+1); }
+function dataUrlMime(dataUrl){ const m = dataUrl.match(/^data:(.*?);/); return m ? m[1] : 'audio/webm'; }
+function dataUrlToBlob(dataUrl){
+  const mime = dataUrlMime(dataUrl);
+  const bstr = atob(dataUrlToBase64(dataUrl));
+  let n = bstr.length;
+  const u8 = new Uint8Array(n);
+  while(n--){ u8[n] = bstr.charCodeAt(n); }
+  return new Blob([u8], { type: mime });
+}
+async function googleTranscribeAndAnalyze(dataUrl){
+  const key = getApiKeys().google;
+  if(!key) throw new Error('no-key');
+  const mime = dataUrlMime(dataUrl);
+  const base64 = dataUrlToBase64(dataUrl);
+  const prompt = 'فرّغ محتوى هذا المقطع الصوتي العربي نصيًا بدقة، ثم استخرج 3 إلى 5 نقاط رئيسية منه. '
+    + 'أعد النتيجة بصيغة JSON فقط دون أي نص إضافي أو backticks بهذا الشكل بالضبط:\n'
+    + '{"transcript": "النص الكامل هنا", "points": ["نقطة 1", "نقطة 2"]}';
+  const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(key), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: mime, data: base64 } } ] }]
+    })
+  });
+  if(!response.ok) throw new Error('google-audio-http-'+response.status);
+  const data = await response.json();
+  const cand = data.candidates && data.candidates[0];
+  const text = cand && cand.content && cand.content.parts && cand.content.parts.map(p=>p.text||'').join('\n');
+  if(!text || !text.trim()) throw new Error('google-audio-empty');
+  const clean = text.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if(!parsed.transcript) throw new Error('google-audio-bad-json');
+  return { transcript: parsed.transcript, points: parsed.points || [], provider: 'Gemini' };
+}
+async function openaiTranscribeAndAnalyze(dataUrl){
+  const key = getApiKeys().openai;
+  if(!key) throw new Error('no-key');
+  const blob = dataUrlToBlob(dataUrl);
+  const ext = (dataUrlMime(dataUrl).split('/')[1] || 'webm').split(';')[0];
+  const form = new FormData();
+  form.append('file', blob, 'audio.' + ext);
+  form.append('model', 'whisper-1');
+  const trRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + key },
+    body: form
+  });
+  if(!trRes.ok) throw new Error('openai-whisper-http-'+trRes.status);
+  const trData = await trRes.json();
+  const transcript = trData.text;
+  if(!transcript || !transcript.trim()) throw new Error('openai-whisper-empty');
+  let points = [];
+  try{
+    const analysis = await openaiChat('استخرج 3 إلى 5 نقاط رئيسية من النص العربي التالي، وأعدها بصيغة JSON فقط بهذا الشكل: {"points":["نقطة 1","نقطة 2"]}\n\nالنص:\n"""\n' + transcript + '\n"""');
+    const parsed = JSON.parse(analysis.replace(/```json|```/g, '').trim());
+    points = parsed.points || [];
+  }catch(e){ /* التفريغ نجح حتى لو فشل استخراج النقاط */ }
+  return { transcript, points, provider: 'Whisper + ChatGPT' };
+}
+const AUDIO_PROVIDERS = [
+  { key:'google', label:'Gemini', fn: googleTranscribeAndAnalyze },
+  { key:'openai', label:'Whisper (OpenAI)', fn: openaiTranscribeAndAnalyze }
+];
+async function callAIAudio(dataUrl){
+  const keys = getApiKeys();
+  if(!keys.google && !keys.openai){
+    throw new Error('تحليل الصوت يتطلب مفتاح Gemini أو مفتاح OpenAI (كلود لا يدعم تحليل الصوت مباشرة حاليًا). أضف أحدهما من «⚙️ مفاتيح الذكاء الاصطناعي».');
+  }
+  const errors = [];
+  for(const p of AUDIO_PROVIDERS){
+    try{ return await p.fn(dataUrl); }
+    catch(e){ errors.push(p.label + ': ' + e.message); }
+  }
+  throw new Error('تعذّر تحليل التسجيل الصوتي عبر المزوّدين المتاحين:\n' + errors.join('\n'));
+}
+
+let lastAudioAnalysis = null;
+async function analyzeAudioClip(clip, btn){
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ جارٍ التحليل…';
+  try{
+    const result = await callAIAudio(clip.dataUrl);
+    lastAudioAnalysis = result;
+    document.getElementById('audioAnalysisProvider').textContent = 'تم التحليل عبر: ' + result.provider;
+    document.getElementById('audioTranscriptText').textContent = result.transcript;
+    const ptsList = document.getElementById('audioAnalysisPoints');
+    ptsList.innerHTML = '';
+    (result.points||[]).forEach(pt=>{ const li=document.createElement('li'); li.textContent=pt; ptsList.appendChild(li); });
+    document.getElementById('audioAnalysisModal').classList.add('active');
+  }catch(e){
+    alert(e.message || 'تعذّر تحليل التسجيل الصوتي.');
+  }
+  btn.disabled = false; btn.textContent = originalLabel;
+}
+document.getElementById('closeAudioAnalysis').onclick = ()=> document.getElementById('audioAnalysisModal').classList.remove('active');
+document.getElementById('insertAudioAnalysisBtn').onclick = ()=>{
+  if(!lastAudioAnalysis) return;
+  const ed = document.getElementById('editable');
+  const ptsHtml = (lastAudioAnalysis.points||[]).map(p=>`<li>${p}</li>`).join('');
+  const html = '<h3>تفريغ التسجيل الصوتي</h3><p>' + lastAudioAnalysis.transcript.replace(/\n/g,'<br>') + '</p>'
+    + (ptsHtml ? '<h3>أهم النقاط</h3><ul>' + ptsHtml + '</ul>' : '');
+  ed.innerHTML = ed.innerHTML + sanitizeHtmlFragment(html);
+  scheduleSave();
+  updateMetrics();
+  document.getElementById('audioAnalysisModal').classList.remove('active');
+};
+function sanitizeHtmlFragment(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('script,style,iframe,object,embed,link,meta').forEach(el=>el.remove());
+  tmp.querySelectorAll('*').forEach(el=>{
+    [...el.attributes].forEach(attr=>{
+      if(/^on/i.test(attr.name)) el.removeAttribute(attr.name);
+    });
+  });
+  return tmp.innerHTML;
+}
+
+document.getElementById('aiFormatBtn').addEventListener('click', async ()=>{
+  const ed = document.getElementById('editable');
+  const raw = stripHtml(ed.innerHTML).trim();
+  if(!raw){ alert('لا يوجد نص لتنسيقه.'); return; }
+  setAiBusy(true, 'جارٍ التنسيق الذكي…');
+  try{
+    const prompt = 'أنت محرر نصوص علمية شرعية. أعد تنسيق النص العربي التالي إلى HTML بسيط جدًا (استخدم فقط وسوم: h2, h3, p, ul, li, strong, blockquote) بحيث:\n'
+      + '- يُقسَّم النص إلى فقرات وعناوين رئيسية وفرعية ونقاط عند الحاجة.\n'
+      + '- تُحاط أي آية قرآنية بالرمزين ﴿ ﴾.\n'
+      + '- يُحاط أي حديث نبوي أو نص منقول بعلامتي التنصيص « ».\n'
+      + '- تُصحَّح الأخطاء الإملائية الواضحة، ويُشكَّل ما يلزم فقط من الكلمات الصعبة دون تشكيل كامل النص.\n'
+      + 'أعد فقط كود HTML الناتج دون أي شرح أو backticks أو مقدمات.\n\nالنص:\n"""\n' + raw + '\n"""';
+    const { text: html } = await callAIText(prompt);
+    ed.innerHTML = sanitizeHtmlFragment(html);
+    scheduleSave();
+    updateMetrics();
+  }catch(e){
+    alert(e.message || 'تعذّر تنفيذ التنسيق الذكي.');
+  }
+  setAiBusy(false);
+});
+
+document.getElementById('aiSummaryBtn').addEventListener('click', async ()=>{
+  const ed = document.getElementById('editable');
+  const raw = stripHtml(ed.innerHTML).trim();
+  if(!raw){ alert('لا يوجد نص لتلخيصه.'); return; }
+  setAiBusy(true, 'جارٍ التلخيص وإعداد الأسئلة…');
+  try{
+    const prompt = 'لخّص الدرس العربي التالي في 3 إلى 5 نقاط ذهبية مختصرة، ثم ضع 3 أسئلة مراجعة قصيرة مع إجاباتها المختصرة. '
+      + 'أعد النتيجة بصيغة JSON فقط دون أي نص إضافي أو backticks، بهذا الشكل بالضبط:\n'
+      + '{"summary": ["نقطة 1", "نقطة 2"], "questions": [{"q":"السؤال","a":"الجواب"}]}\n\nالنص:\n"""\n' + raw + '\n"""';
+    const { text: textOut } = await callAIText(prompt);
+    const clean = textOut.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    showAiSummaryModal(parsed);
+  }catch(e){
+    alert(e.message || 'تعذّر إنشاء التلخيص.');
+  }
+  setAiBusy(false);
+});
+
+function showAiSummaryModal(parsed){
+  const sumList = document.getElementById('aiSummaryList');
+  const qList = document.getElementById('aiQuestionsList');
+  sumList.innerHTML = '';
+  qList.innerHTML = '';
+  (parsed.summary||[]).forEach(pt=>{
+    const li = document.createElement('li'); li.textContent = pt; sumList.appendChild(li);
+  });
+  (parsed.questions||[]).forEach(qa=>{
+    const div = document.createElement('div'); div.className='ai-question';
+    div.innerHTML = `<div class="q">س: ${qa.q}</div><div class="a">ج: ${qa.a}</div>`;
+    qList.appendChild(div);
+  });
+  document.getElementById('insertSummaryBtn').onclick = ()=>{
+    const ed = document.getElementById('editable');
+    const html = '<h2>الخلاصة</h2><ul>' + (parsed.summary||[]).map(p=>`<li>${p}</li>`).join('') + '</ul>';
+    ed.innerHTML = sanitizeHtmlFragment(html) + ed.innerHTML;
+    scheduleSave();
+    updateMetrics();
+    document.getElementById('aiSummaryModal').classList.remove('active');
+  };
+  document.getElementById('aiSummaryModal').classList.add('active');
+}
+document.getElementById('closeAiSummary').onclick = ()=> document.getElementById('aiSummaryModal').classList.remove('active');
+
+document.getElementById('aiMatnBtn').addEventListener('click', async ()=>{
+  const ed = document.getElementById('editable');
+  const raw = stripHtml(ed.innerHTML).trim();
+  if(!raw){ alert('لا يوجد نص لتحليله.'); return; }
+  setAiBusy(true, 'جارٍ تمييز المتن عن الشرح…');
+  try{
+    const prompt = 'ميّز في النص العربي التالي بين "المتن" (النص الأصلي المحفوظ أو المقتبس) و"الشرح" (التعليق والتوضيح). '
+      + 'أعد النص بصيغة HTML بسيط فقط (استخدم فقط وسوم p, span, strong)، بحيث تُحاط عبارات المتن بوسم <span class="matn">...</span> '
+      + 'وعبارات الشرح بوسم <span class="sharh">...</span>، مع الحفاظ على باقي النص داخل فقرات <p>. '
+      + 'أعد فقط كود HTML الناتج دون أي شرح إضافي أو backticks.\n\nالنص:\n"""\n' + raw + '\n"""';
+    const { text: html } = await callAIText(prompt);
+    ed.innerHTML = sanitizeHtmlFragment(html);
+    scheduleSave();
+    updateMetrics();
+  }catch(e){
+    alert(e.message || 'تعذّر تنفيذ التمييز.');
+  }
+  setAiBusy(false);
+});
+
+/* ===== التصدير (Word / PDF) ===== */
+function currentLessonSnapshot(){
+  const lesson = state.lessons.find(l=>l.id===currentLessonId);
+  if(!lesson) return null;
+  return {
+    title: document.getElementById('titleInput').value || 'بلا عنوان',
+    content: document.getElementById('editable').innerHTML,
+    cats: lesson.categoryIds.map(cid=> state.categories.find(c=>c.id===cid)).filter(Boolean),
+    footnotes: lesson.footnotes || []
+  };
+}
+
+function buildExportHtml(snap, forPrint){
+  const catsHtml = snap.cats.length
+    ? '<div style="margin:0 0 16px;font-size:12px;color:#5B6560;">' +
+        snap.cats.map(c=>`<span style="display:inline-block;background:${c.color};color:#fff;border-radius:20px;padding:3px 10px;margin-inline-end:6px;font-size:11px;">${c.name}</span>`).join('') +
+      '</div>'
+    : '';
+  const fnHtml = snap.footnotes.length
+    ? '<hr style="margin:30px 0 14px;border:none;border-top:1px solid #ccc;"><div style="font-size:13px;color:#5B6560;"><strong>الحواشي</strong><ol>' +
+        snap.footnotes.map(fn=>`<li>${fn.text}</li>`).join('') +
+      '</ol></div>'
+    : '';
+  return `<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+<title>${snap.title}</title>
+<style>
+  body{font-family:'Amiri','Traditional Arabic',serif; font-size:16px; line-height:2; color:#232B26; padding:${forPrint?'0':'40px'};}
+  h1.doc-title{font-family:'Amiri',serif; font-size:26px; margin:0 0 10px;}
+  img{max-width:100%;}
+  blockquote{border-inline-start:3px solid #B9924F; margin:10px 0; padding:4px 16px; color:#5B6560; font-style:italic;}
+  table{border-collapse:collapse;width:100%;}
+  td,th{border:1px solid #ccc;padding:6px 8px;}
+  .matn{font-weight:700;}
+  .sharh{color:#5B6560;}
+  @media print{ body{padding:0;} }
+</style></head>
+<body>
+  <h1 class="doc-title">${snap.title}</h1>
+  ${catsHtml}
+  <div>${snap.content}</div>
+  ${fnHtml}
+</body></html>`;
+}
+
+document.getElementById('exportWordBtn').addEventListener('click', ()=>{
+  const snap = currentLessonSnapshot();
+  if(!snap) return;
+  const html = buildExportHtml(snap, false);
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (snap.title || 'درس').trim() + '.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('exportPdfBtn').addEventListener('click', ()=>{
+  const snap = currentLessonSnapshot();
+  if(!snap) return;
+  const html = buildExportHtml(snap, true);
+  const win = window.open('', '_blank');
+  if(!win){ alert('يرجى السماح بالنوافذ المنبثقة لتصدير PDF.'); return; }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  win.onload = ()=>{ win.focus(); win.print(); };
+  setTimeout(()=>{ try{ win.focus(); win.print(); }catch(e){} }, 400);
+});
+
+/* ===== Init ===== */
+loadState();
+</script>
+</body>
+</html>
